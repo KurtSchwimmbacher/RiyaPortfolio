@@ -7,7 +7,7 @@ const filmData = [
     year: "2025",
     role: "Director",
     stillImage: "/assets/films/die_fokken_voel.png",
-    stillImageAlt: "Die Fokken Voel film stil
+    stillImageAlt: "Die Fokken Voel film still"
   },
   {
     title: "Mushrooms",
