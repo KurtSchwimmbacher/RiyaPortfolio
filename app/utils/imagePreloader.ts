@@ -8,7 +8,7 @@ export const preloadImages = (
   imageUrls: string[],
   onProgress?: (progress: number) => void
 ): Promise<void> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     if (imageUrls.length === 0) {
       onProgress?.(100);
       resolve();
@@ -32,8 +32,8 @@ export const preloadImages = (
       }
     };
 
-    const handleImageError = (error: Event) => {
-      console.warn('Failed to preload image:', error);
+    const handleImageError = () => {
+      console.warn('Failed to preload image');
       loadedCount++;
       updateProgress();
       
