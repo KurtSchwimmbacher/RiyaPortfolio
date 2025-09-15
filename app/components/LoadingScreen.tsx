@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { filmData } from '../data/filmData';
+import { preloadFilmImages } from '../utils/imagePreloader';
 
 interface LoadingScreenProps {
   onComplete: () => void;
@@ -13,9 +15,6 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const loadingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Create loading animation timeline
-    const tl = gsap.timeline();
-
     // Initial animation for the percentage counter
     gsap.fromTo(percentageRef.current, 
       { 
@@ -32,16 +31,41 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       }
     );
 
-    // Animate the percentage counter from 0 to 100
-    tl.to({}, {
-      duration: 3, // 3 seconds total loading time
-      ease: "power2.out",
-      onUpdate: function() {
-        const currentProgress = Math.round(this.progress() * 100);
-        setProgress(currentProgress);
-      },
-      onComplete: () => {
-        // Add a slight delay before fade out
+    // Start preloading images
+    const startPreloading = async () => {
+      try {
+        await preloadFilmImages(filmData, (imageProgress) => {
+          // Update progress based on image loading (0-80% of total progress)
+          const totalProgress = Math.round(imageProgress * 0.8);
+          setProgress(totalProgress);
+        });
+
+        // After images are loaded, complete the remaining 20% with a smooth animation
+        const tl = gsap.timeline();
+        tl.to({}, {
+          duration: 0.5, // 0.5 seconds to complete the remaining 20%
+          ease: "power2.out",
+          onUpdate: function() {
+            const remainingProgress = Math.round(this.progress() * 20);
+            setProgress(80 + remainingProgress);
+          },
+          onComplete: () => {
+            // Add a slight delay before fade out
+            gsap.delayedCall(0.3, () => {
+              gsap.to(loadingRef.current, {
+                duration: 0.8,
+                opacity: 0,
+                scale: 1.05,
+                ease: "power2.inOut",
+                onComplete: onComplete
+              });
+            });
+          }
+        });
+      } catch (error) {
+        console.warn('Error preloading images:', error);
+        // If preloading fails, still complete the loading
+        setProgress(100);
         gsap.delayedCall(0.3, () => {
           gsap.to(loadingRef.current, {
             duration: 0.8,
@@ -52,11 +76,9 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           });
         });
       }
-    });
-
-    return () => {
-      tl.kill();
     };
+
+    startPreloading();
   }, [onComplete]);
 
   return (
