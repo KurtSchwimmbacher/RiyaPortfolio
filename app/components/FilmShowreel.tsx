@@ -7,6 +7,20 @@ import FilmCard from './FilmCard';
 // Sample film data
 const filmData = [
   {
+    title: "Whirlwind", 
+    year: "2025",
+    role: "Director, Writer, Producer",
+    stillImage: "/assets/films/whirlwind.png",
+    stillImageAlt: "Whirlwind film still"
+  },
+  {
+    title: "The Can", 
+    year: "2025",
+    role: "Director, Writer, Producer, Production designer, Editor",
+    stillImage: "/assets/films/the_can.png",
+    stillImageAlt: "The Can film still"
+  },
+  {
     title: "Die Fokken Voel",
     year: "2025",
     role: " Production designer, Co-director, Gaffer, Actor ",
@@ -18,14 +32,16 @@ const filmData = [
     year: "2024",
     role: "Director, Producer, Writer, Production designer, Editor",
     stillImage: "/assets/films/mushrooms.png",
-    stillImageAlt: "Mushrooms film still"
+    stillImageAlt: "Mushrooms film still",
+    hasAwards: true
   },
   {
     title: "The Overcoat",
     year: "2024",
     role: "Director, Production designer, Producer, Editor",
     stillImage: "/assets/films/the_overcoat.png",
-    stillImageAlt: "The Overcoat film still"
+    stillImageAlt: "The Overcoat film still",
+    hasAwards: true
   },
   {
     title: "Til Death Do I Part",
@@ -185,6 +201,7 @@ export default function FilmShowreel() {
               stillImageAlt={film.stillImageAlt}
               isActive={index === currentCard}
               isCovered={index > currentCard}
+              hasAwards={film.hasAwards || false}
             />
           </div>
         ))}
