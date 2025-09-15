@@ -190,8 +190,8 @@ export default function FilmShowreel() {
         ))}
       </div>
       
-      {/* Scroll indicator */}
-      <div className="absolute right-6 top-1/2 transform -translate-y-1/2 z-[200] pointer-events-none">
+      {/* Scroll indicator - Left side (matching hero layout) */}
+      <div className="absolute left-6 top-1/2 transform -translate-y-1/2 z-[200] pointer-events-none">
         <div className="flex flex-col space-y-3">
           {filmData.map((_, index) => (
             <div

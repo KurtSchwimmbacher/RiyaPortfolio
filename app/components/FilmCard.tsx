@@ -19,22 +19,6 @@ export default function FilmCard({
 }: FilmCardProps) {
   return (
     <div className="w-full h-screen bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col relative">
-      {/* Film Information - Overlay at top */}
-      <div className="absolute top-0 left-0 right-0 p-6 space-y-3 text-white z-10">
-        <h3 className="text-2xl md:text-3xl font-bold leading-tight drop-shadow-lg">
-          {title}
-        </h3>
-        
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <div className="text-lg font-medium drop-shadow-md">
-            {year}
-          </div>
-          <div className="text-lg drop-shadow-md">
-            {role}
-          </div>
-        </div>
-      </div>
-
       {/* Film Still Image */}
       <div className="flex-1 bg-gray-100 relative overflow-hidden">
         {stillImage ? (
@@ -50,7 +34,23 @@ export default function FilmCard({
         )}
         
         {/* Overlay for better text visibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+      </div>
+
+      {/* Film Information - Bottom right (matching hero layout) */}
+      <div className="absolute bottom-0 right-0 p-6 space-y-3 text-white z-10 text-right">
+        <h3 className="text-8xl md:text-10xl lg:text-12xl font-bold leading-tight drop-shadow-lg">
+          {title}
+        </h3>
+        
+        <div className="flex flex-col gap-2">
+          <div className="text-lg font-medium drop-shadow-md">
+            {year}
+          </div>
+          <div className="text-lg drop-shadow-md">
+            {role}
+          </div>
+        </div>
       </div>
     </div>
   );
