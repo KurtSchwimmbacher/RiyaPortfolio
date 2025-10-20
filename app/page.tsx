@@ -58,15 +58,10 @@ export default function Home() {
               <div>Links</div>
             </div>
             <div className="flex flex-col space-y-2">
-              <a href="#" className="text-black text-base sm:text-lg underline underline-offset-4 hover:underline-offset-2 transition-all duration-200">YouTube</a>
-              <a href="#" className="text-black text-base sm:text-lg underline underline-offset-4 hover:underline-offset-2 transition-all duration-200">Instagram</a>
-              <a href="#" className="text-black text-base sm:text-lg underline underline-offset-4 hover:underline-offset-2 transition-all duration-200">LinkedIn</a>
+              <a href="https://www.instagram.com/riya.productions?igsh=bjVnYzk5c2JlcGlz " className="text-black text-base sm:text-lg underline underline-offset-4 hover:underline-offset-2 transition-all duration-200">YouTube</a>
+              <a href="https://youtube.com/@riya.productions?si=-tGvc4hTO298Nz6B " className="text-black text-base sm:text-lg underline underline-offset-4 hover:underline-offset-2 transition-all duration-200">Instagram</a>
+              <a href="www.linkedin.com/in/aliyah-bennett-775101373 " className="text-black text-base sm:text-lg underline underline-offset-4 hover:underline-offset-2 transition-all duration-200">LinkedIn</a>
             </div>
-          </div>
-          <div className="text-right space-y-2">
-            <p className="text-black text-xs sm:text-sm max-w-[14rem] sm:max-w-xs leading-relaxed">
-              Fill these links later. This section sits below your film cards.
-            </p>
           </div>
         </div>
       </section>
