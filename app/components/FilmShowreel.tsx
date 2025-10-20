@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 import FilmCard from './FilmCard';
 import { filmData } from '../data/filmData';
 
@@ -126,8 +127,55 @@ export default function FilmShowreel() {
     };
   }, [isAnimating]);
 
+  // Click-based navigation helpers
+  const goToIndex = (targetIndex: number) => {
+    const cards = cardsRef.current.filter(Boolean);
+    const currentIndex = currentCardRef.current;
+    if (isAnimating) return;
+    if (targetIndex === currentIndex) return;
+    if (targetIndex < 0 || targetIndex > cards.length - 1) return;
+
+    setIsAnimating(true);
+    const currentCardEl = cards[currentIndex];
+    const targetCardEl = cards[targetIndex];
+
+    if (!currentCardEl || !targetCardEl) {
+      setIsAnimating(false);
+      return;
+    }
+
+    // Determine direction
+    const goingDown = targetIndex > currentIndex;
+
+    gsap.timeline()
+      .to(currentCardEl, {
+        y: goingDown ? '-100vh' : '100vh',
+        duration: 0.8,
+        ease: 'power2.inOut'
+      })
+      .to(targetCardEl, {
+        y: '0vh',
+        duration: 0.8,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          setCurrentCard(targetIndex);
+          setIsAnimating(false);
+        }
+      }, 0);
+  };
+
+  const goToNext = () => goToIndex(currentCardRef.current + 1);
+  const goToPrev = () => {
+    if (currentCardRef.current === 0) {
+      // mimic existing behavior to scroll to hero when at first card
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    goToIndex(currentCardRef.current - 1);
+  };
+
   return (
-    <div className="w-full h-screen bg-white overflow-hidden relative" ref={containerRef}>
+    <div className="w-full h-[100svh] bg-white overflow-hidden relative" ref={containerRef}>
       {/* Cards Container */}
       <div className="relative w-full h-full">
         {filmData.map((film, index) => (
@@ -148,24 +196,50 @@ export default function FilmShowreel() {
               isActive={index === currentCard}
               isCovered={index > currentCard}
               hasAwards={film.hasAwards || false}
+              link={film.link}
             />
           </div>
         ))}
       </div>
       
-      {/* Scroll indicator - Left side (matching hero layout) */}
-      <div className="absolute left-6 top-1/2 transform -translate-y-1/2 z-[200] pointer-events-none">
-        <div className="flex flex-col space-y-3">
-          {filmData.map((_, index) => (
-            <div
-              key={index}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentCard 
-                  ? 'bg-white scale-110 shadow-lg' 
-                  : 'bg-white/30 border-2 border-white/60'
-              }`}
-            />
-          ))}
+      {/* Scroll indicator with click navigation - Left side (matching hero layout) */}
+      <div className="absolute left-4 sm:left-5 md:left-6 top-1/2 transform -translate-y-1/2 z-[200]">
+        <div className="flex flex-col items-center space-y-2 sm:space-y-3">
+          {/* Up button */}
+          <button
+            type="button"
+            onClick={goToPrev}
+            disabled={isAnimating}
+            aria-label="Previous film"
+            className="pointer-events-auto p-1.5 sm:p-2 rounded-full bg-white/20 hover:bg-white/40 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronUp size={16} className="sm:h-[18px] sm:w-[18px]" />
+          </button>
+
+          {/* Dots indicator */}
+          <div className="flex flex-col items-center space-y-2 sm:space-y-3 pointer-events-none">
+            {filmData.map((_, index) => (
+              <div
+                key={index}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentCard 
+                    ? 'bg-white scale-110 shadow-lg' 
+                    : 'bg-white/30 border-2 border-white/60'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Down button */}
+          <button
+            type="button"
+            onClick={goToNext}
+            disabled={isAnimating || currentCard === filmData.length - 1}
+            aria-label="Next film"
+            className="pointer-events-auto p-1.5 sm:p-2 rounded-full bg-white/20 hover:bg-white/40 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronDown size={16} className="sm:h-[18px] sm:w-[18px]" />
+          </button>
         </div>
       </div>
       

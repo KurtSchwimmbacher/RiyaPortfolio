@@ -4,17 +4,23 @@ import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import LoadingScreen from './LoadingScreen';
 import Navigation from './Navigation';
+import { usePathname } from 'next/navigation';
 
 interface AppWrapperProps {
   children: React.ReactNode;
 }
 
 export default function AppWrapper({ children }: AppWrapperProps) {
+  // Always start as loading on both server and first client render to avoid hydration mismatches
   const [isLoading, setIsLoading] = useState(true);
   const mainContentRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   const handleLoadingComplete = () => {
     setIsLoading(false);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('hasShownLoader', '1');
+    }
   };
 
   // Animate main content entrance when loading is complete
@@ -35,38 +41,49 @@ export default function AppWrapper({ children }: AppWrapperProps) {
     }
   }, [isLoading]);
 
-  // Optional: Add a minimum loading time to ensure smooth experience
+  // Decide whether to show loader only on first visit (client-side) and cap max duration
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const hasShown = sessionStorage.getItem('hasShownLoader');
+    if (hasShown) {
+      setIsLoading(false);
+      return;
+    }
+
+    // Show loader and cap to 4s max on first visit
     const timer = setTimeout(() => {
-      if (isLoading) {
-        setIsLoading(false);
-      }
-    }, 4000); // Maximum 4 seconds loading time
+      setIsLoading(false);
+      sessionStorage.setItem('hasShownLoader', '1');
+    }, 4000);
 
     return () => clearTimeout(timer);
-  }, [isLoading]);
+  }, []);
 
   if (isLoading) {
     return <LoadingScreen onComplete={handleLoadingComplete} />;
   }
 
   return (
-    <div ref={mainContentRef} className="min-h-screen bg-[#fafafa] relative">
-      {/* Background texture */}
-      <div className="absolute inset-0 bg-[#fafafa] z-0" id="background-texture">
-        <div 
-          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat mix-blend-screen"
-          style={{
-            backgroundImage: 'url(/assets/GrungePosterTextures25.png)'
-          }}
+      <div ref={mainContentRef} className="min-h-screen bg-[#fafafa] relative overflow-hidden">
+        {/* Background texture */}
+        <div className="absolute inset-0 bg-[#fafafa] z-0" id="background-texture">
+          <div 
+            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat mix-blend-screen"
+            style={{
+              backgroundImage: 'url(/assets/GrungePosterTextures25.png)'
+            }}
+          />
+        </div>
+        
+        {/* Navigation */}
+        <Navigation
+          activePage={pathname && pathname.startsWith('/bio') ? 'bio' : 'work'}
+          color={pathname && pathname.startsWith('/bio') ? 'white' : 'black'}
         />
+        
+        {/* Main content */}
+        {children}
+        
       </div>
-      
-      {/* Navigation */}
-      <Navigation activePage="work" />
-      
-      {/* Main content */}
-      {children}
-    </div>
   );
 }

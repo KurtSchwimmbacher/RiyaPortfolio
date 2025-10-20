@@ -4,10 +4,12 @@ import { useState } from 'react';
 
 interface NavigationProps {
   activePage?: 'bio' | 'work' | 'contact';
+  color?: 'black' | 'white';
 }
 
-export default function Navigation({ activePage = 'work' }: NavigationProps) {
+export default function Navigation({ activePage = 'work', color = 'black' }: NavigationProps) {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const textClass = color === 'white' ? 'text-white' : 'text-black';
 
   const navItems = [
     { id: 'bio', label: 'Bio' },
@@ -22,8 +24,8 @@ export default function Navigation({ activePage = 'work' }: NavigationProps) {
         {navItems.slice(0, 2).map((item) => (
           <a
             key={item.id}
-            href={`/${item.id}`}
-            className={`text-black text-lg font-medium transition-all duration-200 ${
+            href={`/${item.id === 'work' ? '' : item.id}`}
+            className={`${textClass} text-lg font-medium transition-all duration-200 ${
               activePage === item.id || hoveredLink === item.id
                 ? 'underline underline-offset-4'
                 : 'hover:underline hover:underline-offset-4'
@@ -39,8 +41,8 @@ export default function Navigation({ activePage = 'work' }: NavigationProps) {
       {/* Right side navigation */}
       <div>
         <a
-          href="/contact"
-          className={`text-black text-lg font-medium transition-all duration-200 ${
+          href="/#contact"
+          className={`${textClass} text-lg font-medium transition-all duration-200 ${
             activePage === 'contact' || hoveredLink === 'contact'
               ? 'underline underline-offset-4'
               : 'hover:underline hover:underline-offset-4'
