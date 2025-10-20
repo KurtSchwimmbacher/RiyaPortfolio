@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 interface NavigationProps {
   activePage?: 'bio' | 'work' | 'contact';
@@ -22,7 +23,7 @@ export default function Navigation({ activePage = 'work', color = 'black' }: Nav
       {/* Left side navigation */}
       <div className="flex space-x-8">
         {navItems.slice(0, 2).map((item) => (
-          <a
+          <Link
             key={item.id}
             href={`/${item.id === 'work' ? '' : item.id}`}
             className={`${textClass} text-lg font-medium transition-all duration-200 ${
@@ -34,13 +35,13 @@ export default function Navigation({ activePage = 'work', color = 'black' }: Nav
             onMouseLeave={() => setHoveredLink(null)}
           >
             {item.label}
-          </a>
+          </Link>
         ))}
       </div>
 
       {/* Right side navigation */}
       <div>
-        <a
+        <Link
           href="/#contact"
           className={`${textClass} text-lg font-medium transition-all duration-200 ${
             activePage === 'contact' || hoveredLink === 'contact'
@@ -51,7 +52,7 @@ export default function Navigation({ activePage = 'work', color = 'black' }: Nav
           onMouseLeave={() => setHoveredLink(null)}
         >
           Contact
-        </a>
+        </Link>
       </div>
     </nav>
   );
